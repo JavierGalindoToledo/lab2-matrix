@@ -4,12 +4,23 @@
 
 int main()
 {
-  Vector<int> a(3, 3);
-  TMatrix<int> A(3);
-  TMatrix<int> B = A;
-  TMatrix<int> C(3);
+	TMatrix<int> a(5), b(5), c(5);
+	int i, j;
 
-  C = A + B;
+	cout << "TEST MATRIX" << endl;
+
+	for (i = 0; i < 5; i++) {
+		for (j = 0; j < 5; i++) {
+			a[i][j] = i;
+			b[i][j] = i;
+		}
+		c = a + b;
+	}
+
+	cout << "Matrix a = \n" << a << endl;
+	cout << "Matrix b = \n" << b << endl;
+	cout << "Matrix c = a + b" << c << endl;
+
 
   return 0;
 }

@@ -1,54 +1,168 @@
-#pragma once
+#ifndef _MATRIX_
+#define _MATRIX_
+#include "MyVector.h"
 
-#include "MyVector.h" 
+const int MAX_MATRIX_SIZE = 100000;
 
-template <class T>
-class TMatrix : public Vector<Vector <T>>
+template <class ValType>
+class TMatrix : public TVector<TVector<ValType> >
 {
+private:
+    int mSize;
 public:
-	TMatrix(int _size = 0);
-	TMatrix(const TMatrix<T>& A);
-	~TMatrix();
+    TMatrix(int s);
+    TMatrix(const TMatrix& mt);
+    TMatrix(const TVector<TVector<ValType> >& mt);
+    ~TMatrix();
 
-	TMatrix<T>& operator = (const TMatrix<T>& A);
-	TMatrix<T>& operator + (const TMatrix<T>& A);
+    int GetSize() { return mSize; };
+    bool operator==(const TMatrix& mt) const;
+    TMatrix operator= (const TMatrix& mt);
+    TMatrix  operator+ (const TMatrix& mt);
+    TMatrix  operator- (const TMatrix& mt);
+    TMatrix  operator* (const TMatrix& mt);
+
+
+    friend istream& operator>>(istream& in, TMatrix& mt)
+    {
+        for (int i = 0; i < mt.SizeM; i++)
+        {
+            in >> mt.pVector[i];
+        }
+        return in;
+    }
+    friend ostream& operator<<(ostream& out, const TMatrix& mt)
+    {
+        for (int i = 0; i < mt.SizeM; i++)
+        {
+            out << mt.pVector[i] << endl;
+        }
+        return out;
+    }
 };
 
-template<class T>
-inline TMatrix<T>::TMatrix(int _size) : Vector<Vector<T>>(_size)
+template<class ValType>
+inline TMatrix<ValType>::TMatrix(int s) : TVector<TVector <ValType> >(s)
 {
+    if (s < 0 || s > MAX_MATRIX_SIZE)
+    {
+        throw  logic_error("ERROR");
+    }
+    mSize = s;
 }
 
-template<class T>
-inline TMatrix<T>::TMatrix(const TMatrix<T>& A) : Vector<Vector<T>>(A)
+template <class ValType>
+inline TMatrix<ValType>::TMatrix(const TMatrix<ValType>& mt) : TVector<TVector<ValType> >(mt)
 {
+    mSize = mt.SizeM;
 }
 
-template<class T>
-inline TMatrix<T>::~TMatrix()
+template <class ValType>
+inline TMatrix<ValType>::TMatrix(const TVector<TVector<ValType> >& mt) : TVector<TVector<ValType> >(mt)
 {
+
 }
 
-template<class T>
-inline TMatrix<T>& TMatrix<T>::operator=(const TMatrix<T>& A)
+template<class ValType>
+inline TMatrix<ValType>::~TMatrix()
 {
-	if (this != &A)
-	{
-		Vector<Vector<T>>:: operator= (A);
-	}
-
-	return *this;
+    if (mSize != 0)
+    {
+        mSize = NULL;
+    }
 }
 
-template<class T>
-inline TMatrix<T>& TMatrix<T>::operator+(const TMatrix<T>& A)
+template <class ValType>
+bool TMatrix<ValType>::operator==(const TMatrix<ValType>& mt) const
 {
-	TMatrix<T> tmp(*this);
+    bool res = true;
+    int S = this->SizeM;
 
-	for (int i = 0; i < this->Length; i++)
-		tmp.x[i] = tmp.x[i] + A.x[i];
+    if (S != mt.SizeM)
+    {
+        res = false;
+    }
 
+    for (int i = 0; i < S; i++)
+    {
+        if (this->pVector[i] == mt.pVector[i])
+        {
+            res = true;
+        }
+        else res = false;
+    }
 
-	return tmp;
+    return res;
 }
 
+template <class ValType>
+inline TMatrix<ValType> TMatrix<ValType>::operator=(const TMatrix<ValType>& mt)
+{
+    if (this != &mt)
+    {
+        if (this->SizeM != mt.SizeM)
+        {
+            if (this->pVector != NULL)
+            {
+                delete[] this->pVector;
+            }
+            this->pVector = new TVector<ValType>[mt.SizeM];
+        }
+
+        this->SizeM = mt.SizeM;
+
+        for (int i = 0; i < this->SizeM; i++)
+        {
+            this->pVector[i] = mt.pVector[i];
+        }
+    }
+
+    return *this;
+}
+
+template <class ValType>
+inline TMatrix<ValType> TMatrix<ValType>::operator+(const TMatrix<ValType>& mt)
+{
+    if (this->GetSize() != mt.SizeM)
+    {
+        throw  logic_error("ERROR");
+    }
+
+    TMatrix<ValType> temp(*this);
+
+    for (int i = 0; i < this->SizeM; i++)
+    {
+        temp.pVector[i] = temp.pVector[i] + mt.pVector[i];
+    }
+    return temp;
+}
+
+template <class ValType>
+inline TMatrix<ValType> TMatrix<ValType>::operator-(const TMatrix<ValType>& mt)
+{
+    if (this->GetSize() != mt.SizeM)
+    {
+        throw  logic_error("ERROR");
+    }
+
+    TMatrix<ValType> temp(*this);
+
+    for (int i = 0; i < this->SizeM; i++)
+    {
+        temp.pVector[i] = temp.pVector[i] - mt.pVector[i];
+    }
+    return temp;
+}
+
+template<class ValType>
+inline TMatrix<ValType> TMatrix<ValType>::operator*(const TMatrix& mt)
+{
+    TMatrix<ValType> temp(*this);
+
+    for (int i = 0; i < this->SizeM; i++)
+    {
+        temp.pVector[i] = temp.pVector[i] * mt.pVector[i];
+    }
+    return temp;
+}
+#endif
