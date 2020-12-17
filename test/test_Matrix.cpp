@@ -1,75 +1,146 @@
-#include "MyVector.h"
-
+#include "Multistack.h"
+#include "Multistack.cpp"
 #include <gtest.h>
-#include "Matrix.h"
 
-TEST(TMatrix, can_create_matrix) {
-	ASSERT_NO_THROW(TMatrix<int>(3));
-}
-
-TEST(TMatrix, can_set_get_element) {
-	TMatrix<int> m1(2);
-	m1(1, 1) = 6;
-	EXPECT_EQ(m1(1, 1), 6);
+TEST(TMultiStack, can_create_MultiStack_with_positive_length)
+{
+	ASSERT_NO_THROW(TMultiStack<int> mst(9, 3));
 }
 
-TEST(TMatrix, can_set_get_element_out_of_range) {
-	TMatrix<int> m1(3);
-	m1(1, 1) = 5;
-	EXPECT_ANY_THROW(m1(3, 0) = 5);
+TEST(TMultiStack, cant_create_MultiStack_with_null)
+{
+	ASSERT_ANY_THROW(TMultiStack<int> mst(0));
 }
 
-TEST(TMatrix, error_with_negative_index) {
-	TMatrix<int> m1(4);
-	EXPECT_ANY_THROW(m1(-1, -1));
+TEST(TMultiStack, check_empty_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	EXPECT_EQ(true, mst.IsEmpty(1));
 }
 
-TEST(TMatrix, can_compare_two_matrix) {
-	TMatrix<int> m1(4), m2(m1);
-	EXPECT_NO_THROW(m1 == m2);
+TEST(TMultiStack, check_for_non_existent_empty_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_ANY_THROW(mst.IsEmpty(4));
 }
 
-TEST(TMatrix, copied_matrix_is_equal_to_source_one) {
-	TMatrix<int> m1(4), m2(m1);
-	EXPECT_EQ(m1, m2);
+TEST(TMultiStack, check_negative_empty_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_ANY_THROW(mst.IsEmpty(-5));
 }
 
-TEST(TMatrix, error_with_exceed_index) {
-	TMatrix<int> m1(4);
-	ASSERT_ANY_THROW(m1(5, 5));
+TEST(TMultiStack, check_IsFull_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	EXPECT_EQ(false, mst.IsFull(1));
 }
 
-TEST(TMatrix, can_copy_matrix) {
-	TMatrix<int> m1(2);
-	m1(0, 0) = 1;
-	m1(0, 1) = 2;
-	m1(1, 0) = 3;
-	m1(1, 1) = 4;
-	TMatrix<int>m2(m1);
-	EXPECT_EQ(m1, m2);
+TEST(TMultiStack, check_for_non_existent_IsFull_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_ANY_THROW(mst.IsFull(4));
 }
 
-TEST(TMatrix, assign_changes_size) {
-	TMatrix<int> m1(2), m2(3);
-	m1 = m2;
-	EXPECT_EQ(m1.Length(), 3);
-}
-TEST(TMatrix, assign_changes_size_and_elements_are_equal) {
-	TMatrix<int> m1(2), m2(3);
-	m2(1, 1) = 6;
-	m1 = m2;
-	EXPECT_EQ(m1(1, 1), 6);
-}
-TEST(TMatrix, can_multiplicate_with_equal_size) {
-	TMatrix<int> m1(3), m2(3);
-	EXPECT_NO_THROW(m1 * m2);
+TEST(TMultiStack, check_negative_IsFull_MultiStack)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_ANY_THROW(mst.IsFull(-5));
 }
 
-TEST(TMatrix, multiplicate) {
-	TMatrix<int> m1(2), m2(2);
-	m1(0, 0) = m2(0, 0) = 1;
-	m1(0, 1) = m2(0, 1) = 2;
-	m1(1, 1) = m2(1, 1) = 3;
-	TMatrix<int> mr = m1 * m2;
-	EXPECT_EQ(mr(0, 1), 8);
+TEST(TMultiStack, can_push_with_mem)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_NO_THROW(mst.Push(10, 1));
 }
+
+TEST(TMultiStack, cant_push_with_no_mem)
+{
+	TMultiStack<int> mst(9, 3);
+
+	ASSERT_ANY_THROW(mst.Push(10, 4));
+}
+
+TEST(TMultiStack, can_copy_stack)
+{
+	TMultiStack<int> mst1(9, 3);
+	mst1.Push(10, 1);
+
+	ASSERT_NO_THROW(TMultiStack<int> mst2(mst1));
+}
+
+TEST(TMultiStack, can_assing_stack)
+{
+	TMultiStack<int> mst1(9, 3);
+	mst1.Push(10, 1);
+	TMultiStack<int> mst2(9, 3);
+	mst2 = mst1;
+
+	EXPECT_EQ(10, mst2.Get(1));
+}
+
+TEST(TMultiStack, can_get)
+{
+	TMultiStack<int> mst(9, 3);
+	mst.Push(10, 1);
+
+	ASSERT_NO_THROW(mst.Get(1));
+}
+
+TEST(TMultiStack, cant_get_nonexistent)
+{
+	TMultiStack<int> mst(9, 3);
+	mst.Push(10, 1);
+
+	ASSERT_ANY_THROW(mst.Get(-4));
+}
+
+TEST(TMultiStack, cant_get_negative)
+{
+	TMultiStack<int> mst1(9, 3);
+	mst1.Push(10, 1);
+
+	ASSERT_ANY_THROW(mst1.Get(4));
+}
+
+TEST(TMultiStack, can_GetSize)
+{
+	TMultiStack<int> mst1(9, 3);
+
+	ASSERT_NO_THROW(mst1.GetSize());
+}
+
+TEST(TMultiStack, can_Resize)
+{
+	TMultiStack<int> mst1(1, 1);
+	mst1.Push(10, 0);
+
+	ASSERT_NO_THROW(mst1.Resize(5, 0));
+}
+
+TEST(TMultiStack, cant_Resize_negative)
+{
+	TMultiStack<int> mst1(1, 1);
+	mst1.Push(10, 0);
+
+	ASSERT_ANY_THROW(mst1.Resize(-5, 0));
+}
+
+TEST(TMultiStack, can_StackRelocation)
+{
+	TMultiStack<int> mst(9, 3);
+	mst.Push(11, 0);
+	mst.Push(12, 1);
+	mst.Push(12, 1);
+	mst.Push(12, 1);
+
+	ASSERT_NO_THROW(mst.Push(15, 1));
+}
+//
