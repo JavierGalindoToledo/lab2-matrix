@@ -1,4 +1,4 @@
-set(target MP2_TESTS)
+set(target Matrix_Test)
 
 file(GLOB hdrs "*.h*")
 file(GLOB srcs "*.cpp")
